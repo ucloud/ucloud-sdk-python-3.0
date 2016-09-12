@@ -42,7 +42,6 @@ class UConnection(object):
 
     def get(self, resouse, params):
         resouse += "?" + urllib.parse.urlencode(params)
-        print(("%s%s" % (self.base_url, resouse)))
         self.conn.request("GET", resouse)
         response = json.loads(self.conn.getresponse().read().decode(encoding='utf-8'))
         return response
