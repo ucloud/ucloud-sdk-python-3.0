@@ -46,6 +46,12 @@ class UConnection(object):
         response = json.loads(self.conn.getresponse().read().decode(encoding='utf-8'))
         return response
 
+    def post(self, uri, params):
+        headers = {"Content-Type": "application/json"}
+        self.conn.request("POST", uri, json.JSONEncoder().encode(params), headers)
+        response = json.loads(self.conn.getresponse().read())
+        return response
+
 
 class UcloudApiClient(object):
     # 添加 设置 数据中心和  zone 参数
@@ -64,3 +70,12 @@ class UcloudApiClient(object):
 
         _params["Signature"] = _verfy_ac(self.private_key, _params)
         return self.conn.get(uri, _params)
+
+    def post(self, uri, params):
+        _params = dict(self.g_params, **params)
+
+        if project_id :
+            _params["ProjectId"] = project_id
+
+        _params["Signature"] = _verfy_ac(self.private_key, _params)
+        return self.conn.post(uri, _params)
